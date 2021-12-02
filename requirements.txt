@@ -1,0 +1,11 @@
+pandas
+openpyxl
+
+# packaging
+wheel
+
+# formatting
+autopep8
+
+# jupyter
+ipykernel
