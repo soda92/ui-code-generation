@@ -1,4 +1,5 @@
 # %%
+import os
 import re
 import sqlite3
 from IPython.display import display
@@ -234,8 +235,19 @@ for section, mapping in arr4:
     print(section)
     display(mapping)
 
+
 # %%
-con = sqlite3.connect('db.sqlite3')
+
+db = 'db.sqlite3'
+if os.path.exists(db):
+    i = 1
+    while True:
+        db = f'db{i}.sqlite3'
+        if not os.path.exists(db):
+            break
+        i += 1
+# %%
+con = sqlite3.connect(db)
 
 # %%
 cur = con.cursor()
@@ -302,15 +314,14 @@ def re_find(t_s):
         result = re.findall(find_mapping, t_s)
         if len(result) >= 1:
             s = result[0]
-            while s[-1].isdigit() or s[-1] == ',' or s[-1] == ' ':
+            if 'DB' in s:
+                mybreak = 1
+            s = s.replace("N/A", '')
+            while s[-1].isdigit() or s[-1] == ' ':
                 s = s[:-1]
             while not s[0].isdigit():
                 s = s[1:]
-            s = s.strip()
-            if s[-3:] == "N/A":
-                s = s[:-3]
-            while s[-1].isdigit() or s[-1] == ',' or s[-1] == ' ':
-                s = s[:-1]
+            s = s.replace(',', ' ').strip()
             s = list(map(str.strip, s.split('=')))
             s[0] = int(s[0])
             _arr.append(s)
